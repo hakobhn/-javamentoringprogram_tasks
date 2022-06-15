@@ -16,13 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceImplTest {
 
-    private ServiceImpl service;
-    private Bank bank;
+    private ServiceImpl service = ServiceImpl.getInstance();
+    private Bank bank = BankImpl.getInstance();
 
     @BeforeEach
     public void setup() {
-        service = ServiceImpl.getInstance();
-        bank = BankImpl.getInstance();
 
         service.cleanAll();
 
