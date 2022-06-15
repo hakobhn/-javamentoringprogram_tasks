@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jmp-cloud-bank-impl</artifactId>
+    <artifactId>jmp.cloud.bank.impl</artifactId>
     <dependencies>
         <dependency>
             <groupId>jmp.workshop</groupId>
-            <artifactId>jmp-dto</artifactId>
+            <artifactId>jmp.dto</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

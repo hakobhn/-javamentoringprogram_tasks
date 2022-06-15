@@ -6,10 +6,7 @@ import jmp.workshop.dto.BankCard;
 import jmp.workshop.dto.BankCardType;
 import jmp.workshop.dto.User;
 import jmp.workshop.service.api.Service;
-import jmp.workshop.service.api.exceptions.NotFoundException;
 import jmp.workshop.service.api.impl.ServiceImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
