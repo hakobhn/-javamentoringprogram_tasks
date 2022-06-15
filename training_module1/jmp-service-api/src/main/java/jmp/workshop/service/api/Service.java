@@ -23,9 +23,10 @@ public interface Service {
     List<User> getAllUsers();
 
     default double getAverageUsersAge() {
+        var now = LocalDate.now();
         return getAllUsers().stream()
                 .map(User::getBirthday)
-                .mapToLong(dt -> ChronoUnit.YEARS.between(dt, LocalDate.now()))
+                .mapToLong(dt -> ChronoUnit.YEARS.between(dt, now))
                 .average()
                 .getAsDouble();
 

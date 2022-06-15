@@ -46,12 +46,12 @@ public class ServiceImpl implements Service {
 
     @Override
     public List<User> getAllUsers() {
-        return userStorage.keySet().stream().collect(Collectors.toList());
+        return new ArrayList<>(userStorage.keySet());
     }
 
     @Override
     public List<Subscription> getAllSubscriptionsByCondition(Predicate<Subscription> predicate) {
-        return getSubscriptions().stream().filter(predicate).collect(Collectors.toList());
+        return getSubscriptions().stream().filter(predicate).collect(Collectors.toUnmodifiableList());
     }
 
     public String printUserStorage() {
