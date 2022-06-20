@@ -5,12 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Random;
 
-public class NumberUtil {
+public class NumberProcessor {
 
-    private final static Logger logger = LoggerFactory.getLogger(NumberUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(NumberProcessor.class);
 
     private LinkedList<Integer> collection = new LinkedList<>();
     private LinkedList<Integer> bufferSum = new LinkedList<>();
@@ -19,7 +20,7 @@ public class NumberUtil {
     private int capacity = 5;
     private Random random = new Random();
 
-    public void produce() throws InterruptedException {
+    public void produce(int waitTime) throws InterruptedException {
         while (true) {
             synchronized (this) {
                 logger.info("------------------------------");
@@ -30,7 +31,7 @@ public class NumberUtil {
                 while (bufferSum.size() == capacity)
                     wait();
 
-                Integer value = random.nextInt(100);
+                Integer value = random.nextInt(10);
                 logger.info("Producer produced: {}", value);
                 bufferSum.offer(value);
 
@@ -39,12 +40,12 @@ public class NumberUtil {
                 notify();
 
                 // Sleep for slow execution
-                Thread.sleep(100);
+                Thread.sleep(waitTime);
             }
         }
     }
 
-    public void consumeForSum() throws InterruptedException {
+    public void consumeForSum(int waitTime) throws InterruptedException {
         while (true) {
             synchronized (this) {
                 while (bufferSum.size() == 0)
@@ -58,12 +59,12 @@ public class NumberUtil {
                 bufferCalc.add(val);
 
                 notify();
-                Thread.sleep(100);
+                Thread.sleep(waitTime);
             }
         }
     }
 
-    public void consumeForCalc() throws InterruptedException {
+    public void consumeForCalc(int waitTime) throws InterruptedException {
         while (true) {
             synchronized (this) {
                 while (bufferCalc.size() == 0)
@@ -75,7 +76,7 @@ public class NumberUtil {
                 logger.info("Calc consumer consumed value: {}, calc is: {}", val, calcSqrtOfCollectionSum(collection));
 
                 notify();
-                Thread.sleep(100);
+                Thread.sleep(waitTime);
             }
         }
     }

@@ -3,57 +3,56 @@ package com.epam.multicurrency.training.task2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
-import java.util.Random;
-
 public class CollectionReadWriteManager {
 
     private static Logger logger = LoggerFactory.getLogger(CollectionReadWriteManager.class);
 
+    private int waitTime = 100;
+
+    public CollectionReadWriteManager(int waitTime) {
+        this.waitTime = waitTime;
+    }
+
     public void processReadAndWrite() throws Exception {
-        // Object of a class that has both produce()
-        // and consume() methods
-        final NumberUtil util = new NumberUtil();
+        // Initiating number processor
+        final NumberProcessor processor = new NumberProcessor();
 
         // Create producer thread
-        Thread t1 = new Thread(() -> {
+        Thread producer = new Thread(() -> {
             try {
-                util.produce();
+                processor.produce(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
 
-        // Create consumer thread
-        Thread t2 = new Thread(() -> {
+        // Create consumer thread for calculating sum
+        Thread sumConsumer = new Thread(() -> {
             try {
-                util.consumeForSum();
+                processor.consumeForSum(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
 
-        // Create consumer thread
-        Thread t3 = new Thread(() -> {
+        // Create consumer thread for calculating function
+        Thread calcConsumer = new Thread(() -> {
             try {
-                util.consumeForCalc();
+                processor.consumeForCalc(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
 
-        // Start both threads
-        t1.start();
-        t2.start();
-        t3.start();
+        // Start all threads
+        logger.info("Starting all threads...");
+        producer.start();
+        sumConsumer.start();
+        calcConsumer.start();
 
-        // t1 finishes before t2
-        t1.join();
-        t2.join();
-        t3.join();
+        producer.join();
+        sumConsumer.join();
+        calcConsumer.join();
     }
 
 }

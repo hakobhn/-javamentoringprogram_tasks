@@ -1,8 +1,6 @@
 package com.epam.multicurrency.training.task1;
 
 import com.epam.multicurrency.training.task1.map.ThreadSafeMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 
