@@ -5,26 +5,20 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class MapReadWriteManager {
+public class SynchronizedMapReadWriteManager extends MapReadWriteManager {
 
-    private static Logger logger = LoggerFactory.getLogger(MapReadWriteManager.class);
+    private static Logger logger = LoggerFactory.getLogger(SynchronizedMapReadWriteManager.class);
 
-    protected int maxVal = 10;
-    protected int waitToAdd = 100;
-    protected int waitToRead = 1000;
-    protected Duration processingDuration = Duration.of(10, ChronoUnit.SECONDS);
+    public SynchronizedMapReadWriteManager(int maxVal, int waitToAdd, int waitToRead, Duration processingDuration) {
+        super(maxVal, waitToAdd, waitToRead, processingDuration);
+        storage = Collections.synchronizedMap(new HashMap<>());
+    }
 
-    protected Map<Integer, Integer> storage;
-    protected Integer sum = 0;
-    protected Random random = new Random();
-
-    protected Throwable error = null;
-
+    @Override
     public void processReadAndWrite() throws Exception {
         var startTime = LocalDateTime.now();
         Thread writer = new Thread(() -> {
@@ -34,7 +28,9 @@ public abstract class MapReadWriteManager {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                storage.putIfAbsent(random.nextInt(1000000), random.nextInt(maxVal));
+                synchronized (storage) {
+                    storage.putIfAbsent(random.nextInt(1000000), random.nextInt(maxVal));
+                }
             }
         });
         Thread reader = new Thread(() -> {
@@ -45,7 +41,9 @@ public abstract class MapReadWriteManager {
                     throw new RuntimeException(e);
                 }
 
-                sum = storage.values().stream().reduce(0, (a, b) -> a + b);
+                synchronized (storage) {
+                    sum = storage.values().stream().reduce(0, (a, b) -> a + b);
+                }
 
                 logger.info("Map: " + storage);
                 logger.info("Sum: " + sum);
@@ -73,28 +71,4 @@ public abstract class MapReadWriteManager {
         writer.join();
         reader.join();
     }
-
-    public MapReadWriteManager() {
-    }
-
-    public MapReadWriteManager(int maxVal, int waitToAdd, int waitToRead, Duration processingDuration) {
-        this.maxVal = maxVal;
-        this.waitToAdd = waitToAdd;
-        this.waitToRead = waitToRead;
-        this.processingDuration = processingDuration;
-    }
-
-    public Map<Integer, Integer> getStorage() {
-        return storage;
-    }
-
-
-    public Integer getSum() {
-        return sum;
-    }
-
-    public Throwable getError() {
-        return error;
-    }
-
 }
