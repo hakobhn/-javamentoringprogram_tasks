@@ -1,7 +1,6 @@
-package com.epam.multithreading.training.test3;
+package com.epam.multithreading.training.task3;
 
 
-import com.epam.multithreading.training.task3.MessageBus;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -51,4 +51,15 @@ public class AccountDTO {
     public void setBankAccounts(List<BankAccountDTO> bankAccounts) {
         this.bankAccounts = bankAccounts;
     }
+
+    @Override
+    public String toString() {
+        return "AccountDTO{" +
+                "uuid='" + uuid + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", dob=" + dob +
+                ", bankAccounts=" + bankAccounts +
+                '}';
+    }
 }

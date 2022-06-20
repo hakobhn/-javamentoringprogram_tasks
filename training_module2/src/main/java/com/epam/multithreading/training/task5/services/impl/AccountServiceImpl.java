@@ -35,4 +35,9 @@ public class AccountServiceImpl implements AccountService {
                 .map(AccountConverter::convertToDto)
                 .collect(Collectors.toUnmodifiableList());
     }
+
+    @Override
+    public void deleteAll() {
+        accountRepository.deleteAll();
+    }
 }

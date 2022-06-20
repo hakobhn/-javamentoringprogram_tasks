@@ -30,4 +30,13 @@ public class BankAccountDTO {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "BankAccountDTO{" +
+                "uuid='" + uuid + '\'' +
+                ", currency=" + currency +
+                ", balance=" + balance +
+                '}';
+    }
 }

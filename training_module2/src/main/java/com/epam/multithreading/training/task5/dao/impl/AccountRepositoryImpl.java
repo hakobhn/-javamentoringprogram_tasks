@@ -48,7 +48,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         }
 
         try (PrintWriter out = new PrintWriter(new FileWriter(ACCOUNT_PATH+ File.separator + account.getUuid()+".json"))) {
-            out.write(json.toString());
+            out.write(json.toString(4));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,5 +108,22 @@ public class AccountRepositoryImpl implements AccountRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void deleteAll() {
+        Path path = Path.of(ACCOUNT_PATH);
+        try {
+            Files.list(path)
+                    .forEach(f -> {
+                        try {
+                            Files.delete(f);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

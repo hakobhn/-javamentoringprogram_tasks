@@ -12,4 +12,6 @@ public interface AccountService {
     void delete(String uuid);
 
     List<AccountDTO> getAll();
+
+    void deleteAll();
 }

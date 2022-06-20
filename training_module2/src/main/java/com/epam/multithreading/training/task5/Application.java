@@ -5,6 +5,8 @@ import com.epam.multithreading.training.task5.model.BankAccountDTO;
 import com.epam.multithreading.training.task5.model.Currency;
 import com.epam.multithreading.training.task5.services.AccountService;
 import com.epam.multithreading.training.task5.services.impl.AccountServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,9 +15,13 @@ import java.util.List;
 
 public class Application {
 
+    private static Logger logger = LoggerFactory.getLogger(Application.class);
+
     public static void main(String[] args) {
 
         AccountService accountService = new AccountServiceImpl();
+
+        accountService.deleteAll();
 
         BankAccountDTO visa = new BankAccountDTO();
         visa.setCurrency(Currency.USD);
@@ -53,5 +59,8 @@ public class Application {
 
         accountService.create(john);
 
+        logger.info("All accounts: {}", accountService.getAll());
+
     }
+
 }
