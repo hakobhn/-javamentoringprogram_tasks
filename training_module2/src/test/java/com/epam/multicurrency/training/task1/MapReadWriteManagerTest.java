@@ -16,15 +16,15 @@ public class MapReadWriteManagerTest {
     private static Logger logger = LoggerFactory.getLogger(MapReadWriteManagerTest.class);
 
     @Test
-    public void testManagerInit() {
+    public void testManagersInit() {
         MapReadWriteManager simpleManager = new SimpleMapReadWriteManager(10, 100, 1000,
-                Duration.of(5, ChronoUnit.SECONDS));
+                Duration.of(5, ChronoUnit.SECONDS), true);
 
-        MapReadWriteManager concurentManager = new SimpleMapReadWriteManager(10, 100, 1000,
-                Duration.of(5, ChronoUnit.SECONDS));
+        MapReadWriteManager concurrentManager = new SimpleMapReadWriteManager(10, 100, 1000,
+                Duration.of(5, ChronoUnit.SECONDS), true);
 
         MapReadWriteManager synchronizedManager = new SynchronizedMapReadWriteManager(10, 100, 1000,
-                Duration.of(5, ChronoUnit.SECONDS));
+                Duration.of(5, ChronoUnit.SECONDS), true);
 
         assertTrue(simpleManager.getStorage().isEmpty());
         try {
@@ -35,14 +35,14 @@ public class MapReadWriteManagerTest {
         }
         assertFalse(simpleManager.getStorage().isEmpty());
 
-        assertTrue(concurentManager.getStorage().isEmpty());
+        assertTrue(concurrentManager.getStorage().isEmpty());
         try {
-            concurentManager.processReadAndWrite();
+            concurrentManager.processReadAndWrite();
             Thread.sleep(1000);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        assertFalse(concurentManager.getStorage().isEmpty());
+        assertFalse(concurrentManager.getStorage().isEmpty());
 
         assertTrue(synchronizedManager.getStorage().isEmpty());
         try {
@@ -56,10 +56,11 @@ public class MapReadWriteManagerTest {
 
 
     @Test
-    public void testManagerWithoutWaitFails() {
+    public void testManagersWithoutWaitFails() {
 
         try {
-            MapReadWriteManager simpleManager = new SimpleMapReadWriteManager(10, 5, 5, Duration.of(1, ChronoUnit.SECONDS));
+            MapReadWriteManager simpleManager = new SimpleMapReadWriteManager(
+                    10, 5, 5, Duration.of(1, ChronoUnit.SECONDS), true);
             simpleManager.processReadAndWrite();
             assertTrue(simpleManager.getError().getCause().equals(ConcurrentModificationException.class));
         } catch (Exception e) {
@@ -67,7 +68,8 @@ public class MapReadWriteManagerTest {
         }
 
         try {
-            MapReadWriteManager concurrentManager = new ConcurrentMapReadWriteManager(10, 5, 5, Duration.of(1, ChronoUnit.SECONDS));
+            MapReadWriteManager concurrentManager = new ConcurrentMapReadWriteManager(
+                    10, 5, 5, Duration.of(1, ChronoUnit.SECONDS), true);
             concurrentManager.processReadAndWrite();
             assertNull(concurrentManager.getError());
         } catch (Exception e) {
@@ -75,7 +77,8 @@ public class MapReadWriteManagerTest {
         }
 
         try {
-            MapReadWriteManager synchronizedManager = new SynchronizedMapReadWriteManager(10, 5, 5, Duration.of(1, ChronoUnit.SECONDS));
+            MapReadWriteManager synchronizedManager = new SynchronizedMapReadWriteManager(
+                    10, 5, 5, Duration.of(1, ChronoUnit.SECONDS), true);
             synchronizedManager.processReadAndWrite();
             assertNull(synchronizedManager.getError());
         } catch (Exception e) {

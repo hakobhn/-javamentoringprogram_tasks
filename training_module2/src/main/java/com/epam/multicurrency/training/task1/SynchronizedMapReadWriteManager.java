@@ -7,14 +7,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SynchronizedMapReadWriteManager extends MapReadWriteManager {
 
     private static Logger logger = LoggerFactory.getLogger(SynchronizedMapReadWriteManager.class);
 
-    public SynchronizedMapReadWriteManager(int maxVal, int waitToAdd, int waitToRead, Duration processingDuration) {
-        super(maxVal, waitToAdd, waitToRead, processingDuration);
+    public SynchronizedMapReadWriteManager(int maxVal, int waitToAdd, int waitToRead, Duration processingDuration, boolean logs) {
+        super(maxVal, waitToAdd, waitToRead, processingDuration, logs);
         storage = Collections.synchronizedMap(new HashMap<>());
     }
 
@@ -23,48 +22,62 @@ public class SynchronizedMapReadWriteManager extends MapReadWriteManager {
         var startTime = LocalDateTime.now();
         Thread writer = new Thread(() -> {
             while (LocalDateTime.now().isBefore(startTime.plus(processingDuration))) {
-                try {
-                    Thread.sleep(waitToAdd);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (waitToAdd > 0) {
+                    try {
+                        Thread.sleep(waitToAdd);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 synchronized (storage) {
-                    storage.putIfAbsent(random.nextInt(1000000), random.nextInt(maxVal));
+                    storage.putIfAbsent(random.nextInt(Integer.MAX_VALUE), random.nextInt(maxVal));
                 }
             }
         });
         Thread reader = new Thread(() -> {
             while (LocalDateTime.now().isBefore(startTime.plus(processingDuration))) {
-                try {
-                    Thread.sleep(waitToRead);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (waitToRead > 0) {
+                    try {
+                        Thread.sleep(waitToRead);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 synchronized (storage) {
                     sum = storage.values().stream().reduce(0, (a, b) -> a + b);
                 }
 
-                logger.info("Map: " + storage);
-                logger.info("Sum: " + sum);
+                if (logs) {
+                    logger.info("Map: " + storage);
+                    logger.info("Sum: " + sum);
+                }
             }
         });
 
         Thread.UncaughtExceptionHandler hWriter = (th, ex) -> {
             logger.error("Uncaught exception: " + ex);
-            ex.printStackTrace();
+            if (logs) {
+                ex.printStackTrace();
+            }
             error = ex;
         };
         Thread.UncaughtExceptionHandler hReader = (th, ex) -> {
             logger.error("Uncaught exception: " + ex);
-            ex.printStackTrace();
+            if (logs) {
+                ex.printStackTrace();
+            }
             error = ex;
         };
 
-        logger.info("Starting writer thread...");
+        if (logs) {
+            logger.info("Starting writer thread...");
+        }
         writer.setUncaughtExceptionHandler(hWriter);
         writer.start();
-        logger.info("Starting reader thread...");
+        if (logs) {
+            logger.info("Starting reader thread...");
+        }
         reader.setUncaughtExceptionHandler(hReader);
         reader.start();
 
