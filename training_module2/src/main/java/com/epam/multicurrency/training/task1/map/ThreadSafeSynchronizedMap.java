@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class ThreadSafeSynchronizedMap<K, V> extends HashMap<K, V> {
 
-    private HashMap<K, V> container = new HashMap<>();
+    private final HashMap<K, V> container = new HashMap<>();
 
     @Override
     public synchronized V put(K key, V value) {
@@ -62,6 +62,7 @@ public class ThreadSafeSynchronizedMap<K, V> extends HashMap<K, V> {
         return container.values().stream().collect(Collectors.toUnmodifiableList());
     }
 
+    @Override
     public synchronized String toString() {
         return container.toString();
     }

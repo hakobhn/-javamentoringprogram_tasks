@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class ThreadSafeMap<K, V> extends HashMap<K, V> {
 
-    private HashMap<K, V> container = new HashMap<>();
-    private Lock lock = new ReentrantLock();
+    private final HashMap<K, V> container = new HashMap<>();
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public V put(K key, V value) {
@@ -108,6 +108,7 @@ public class ThreadSafeMap<K, V> extends HashMap<K, V> {
         }
     }
 
+    @Override
     public String toString() {
         try {
             lock.lock();

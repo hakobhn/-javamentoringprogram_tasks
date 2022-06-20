@@ -11,12 +11,12 @@ import java.util.ConcurrentModificationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MapReadWriteManagerTest {
+class MapReadWriteManagerTest {
 
     private static Logger logger = LoggerFactory.getLogger(MapReadWriteManagerTest.class);
 
     @Test
-    public void testManagersInit() {
+    void testManagersInit() {
         MapReadWriteManager simpleManager = new SimpleMapReadWriteManager(10, 100, 1000,
                 Duration.of(5, ChronoUnit.SECONDS), true);
 
@@ -56,7 +56,7 @@ public class MapReadWriteManagerTest {
 
 
     @Test
-    public void testManagersWithoutWaitFails() {
+    void testManagersWithoutWaitFails() {
 
         try {
             MapReadWriteManager simpleManager = new SimpleMapReadWriteManager(

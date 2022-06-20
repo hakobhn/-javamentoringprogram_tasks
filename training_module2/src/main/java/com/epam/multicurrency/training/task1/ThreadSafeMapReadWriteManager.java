@@ -8,8 +8,6 @@ import java.time.Duration;
 
 public class ThreadSafeMapReadWriteManager extends MapReadWriteManager {
 
-    private static Logger logger = LoggerFactory.getLogger(ThreadSafeMapReadWriteManager.class);
-
     public ThreadSafeMapReadWriteManager(int maxVal, int waitToAdd, int waitToRead, Duration processingDuration, boolean logs) {
         super(maxVal, waitToAdd, waitToRead, processingDuration, logs);
         storage = new ThreadSafeMap<>();

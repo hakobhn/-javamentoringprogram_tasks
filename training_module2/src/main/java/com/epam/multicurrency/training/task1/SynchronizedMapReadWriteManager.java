@@ -46,24 +46,24 @@ public class SynchronizedMapReadWriteManager extends MapReadWriteManager {
 
                 synchronized (storage) {
                     sum = storage.values().stream().reduce(0, (a, b) -> a + b);
-                }
 
-                if (logs) {
-                    logger.info("Map: " + storage);
-                    logger.info("Sum: " + sum);
+                    if (logs) {
+                        logger.info("Map: {}", storage);
+                        logger.info("Sum: {}", sum);
+                    }
                 }
             }
         });
 
         Thread.UncaughtExceptionHandler hWriter = (th, ex) -> {
-            logger.error("Uncaught exception: " + ex);
+            logger.error("In writer uncaught exception: {}", ex.getLocalizedMessage());
             if (logs) {
                 ex.printStackTrace();
             }
             error = ex;
         };
         Thread.UncaughtExceptionHandler hReader = (th, ex) -> {
-            logger.error("Uncaught exception: " + ex);
+            logger.error("In reader uncaught exception: {}", ex.getLocalizedMessage());
             if (logs) {
                 ex.printStackTrace();
             }
