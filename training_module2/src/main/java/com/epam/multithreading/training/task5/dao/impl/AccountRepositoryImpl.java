@@ -1,8 +1,9 @@
 package com.epam.multithreading.training.task5.dao.impl;
 
-import com.epam.multithreading.training.task5.NotFoundException;
 import com.epam.multithreading.training.task5.dao.AccountRepository;
 import com.epam.multithreading.training.task5.dao.entity.Account;
+import com.epam.multithreading.training.task5.exception.InvalidDataSubmittedException;
+import com.epam.multithreading.training.task5.exception.NotFoundException;
 import com.epam.multithreading.training.task5.util.AccountSerializer;
 import org.json.JSONObject;
 
@@ -24,6 +25,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Account save(Account account) {
+        if (account == null) {
+            throw new InvalidDataSubmittedException("Account is null...");
+        }
         account.setUuid(UUID.randomUUID().toString());
         account.getBankAccounts().stream()
                 .forEach(bnk -> bnk.setUuid(UUID.randomUUID().toString()));
@@ -52,7 +56,45 @@ public class AccountRepositoryImpl implements AccountRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return account;
+    }
+
+    @Override
+    public Account update(Account account) {
+        if (account == null) {
+            throw new InvalidDataSubmittedException("Account is null...");
+        }
+        Account old = findById(account.getUuid());
+        if (old == null) {
+            throw new NotFoundException("Account with uuid: "+old.getUuid()+" not found...");
+        }
+        delete(old.getUuid());
+        JSONObject json = AccountSerializer.serialize(account);
+
+        Path directory = Paths.get(ACCOUNT_PATH);
+        if (! Files.exists(directory)){
+            try {
+                Files.createDirectories(directory);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Path path = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() + ".json");
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try (PrintWriter out = new PrintWriter(new FileWriter(ACCOUNT_PATH+ File.separator + account.getUuid()+".json"))) {
+            out.write(json.toString(4));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return account;
     }
 
     @Override

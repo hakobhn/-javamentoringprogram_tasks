@@ -7,6 +7,10 @@ import java.util.List;
 public interface AccountService {
     AccountDTO create(AccountDTO account);
 
+    List<AccountDTO> createAll(List<AccountDTO> accounts);
+
+    AccountDTO update(AccountDTO account);
+
     AccountDTO get(String uuid);
 
     void delete(String uuid);

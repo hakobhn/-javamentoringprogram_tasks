@@ -20,6 +20,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<AccountDTO> createAll(List<AccountDTO> accounts) {
+        return accounts.stream().map(
+                this::create
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public AccountDTO update(AccountDTO account) {
+        return AccountConverter.convertToDto(accountRepository.update(AccountConverter.convertToEntity(account)));
+    }
+
+
+    @Override
     public AccountDTO get(String uuid) {
         return  AccountConverter.convertToDto(accountRepository.findById(uuid));
     }

@@ -5,6 +5,8 @@ import com.epam.multithreading.training.task5.model.BankAccountDTO;
 import com.epam.multithreading.training.task5.model.Currency;
 import com.epam.multithreading.training.task5.services.AccountService;
 import com.epam.multithreading.training.task5.services.impl.AccountServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,13 +15,17 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class Application {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private static Logger logger = LoggerFactory.getLogger(Application.class);
+public class BankApplicationTest {
 
-    public static void main(String[] args) {
+    private static Logger logger = LoggerFactory.getLogger(BankApplicationTest.class);
 
-        AccountService accountService = new AccountServiceImpl();
+    private AccountService accountService = new AccountServiceImpl();
+
+    @BeforeEach
+    public void setup() {
 
         accountService.deleteAll();
 
@@ -58,9 +64,22 @@ public class Application {
         john.setBankAccounts(List.of(visa1, master1));
 
         accountService.create(john);
+    }
 
-        logger.info("All accounts: {}", accountService.getAll());
+    @Test
+    public void testGetAllAccounts() {
+        List<AccountDTO> accounts = accountService.getAll();
+        logger.info("All accounts: {}", accounts);
+        assertNotNull(accounts);
+        assertTrue(accounts.size() == 2);
+        assertFalse(accounts.get(0).getBankAccounts().isEmpty());
+    }
 
+    @Test
+    public void testGetAccountByUUID() {
+        List<AccountDTO> accounts = accountService.getAll();
+        String uuid = accounts.get(0).getUuid();
+        assertNotNull(accountService.get(uuid));
     }
 
 }

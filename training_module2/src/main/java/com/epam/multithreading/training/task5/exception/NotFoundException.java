@@ -1,4 +1,4 @@
-package com.epam.multithreading.training.task5;
+package com.epam.multithreading.training.task5.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

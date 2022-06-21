@@ -10,7 +10,9 @@ public class BankAccountConverter {
         }
         BankAccountDTO dto = new BankAccountDTO();
         dto.setUuid(entity.getUuid());
+        dto.setName(entity.getName());
         dto.setCurrency(entity.getCurrency());
+        dto.setCardType(entity.getCardType());
         dto.setBalance(entity.getBalance());
 
         return dto;
@@ -22,7 +24,9 @@ public class BankAccountConverter {
         }
         BankAccount entity = new BankAccount();
         entity.setUuid(dto.getUuid());
+        entity.setName(dto.getName());
         entity.setCurrency(dto.getCurrency());
+        entity.setCardType(dto.getCardType());
         entity.setBalance(dto.getBalance());
 
         return entity;

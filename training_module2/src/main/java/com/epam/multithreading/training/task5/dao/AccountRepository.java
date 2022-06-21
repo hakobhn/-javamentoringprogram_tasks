@@ -8,6 +8,8 @@ public interface AccountRepository {
 
     Account save(Account account);
 
+    Account update(Account account);
+
     Account findById(String uuid);
 
     void delete(String uuid);
