@@ -11,9 +11,7 @@ import java.util.Random;
 public class MessageBus {
 
     private final static Logger logger = LoggerFactory.getLogger(MessageBus.class);
-
     private final static String alphabet = "abcdefghijklmnopqrstuvwxyz";
-
     private Map<String, LinkedList<String>> topics;
 
     public MessageBus(Map<String, LinkedList<String>> topics) {
