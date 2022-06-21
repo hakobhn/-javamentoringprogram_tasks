@@ -11,14 +11,14 @@ class MessageProcessorTest {
 
     private static Logger logger = LoggerFactory.getLogger(MessageProcessorTest.class);
 
-    @Test
-    void testGeneratingMessage() {
-        MessageProcessor processor = new MessageProcessor(1000);
-        try {
-            processor.execute();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Test
+//    void testGeneratingMessage() {
+//        MessageProcessor processor = new MessageProcessor(1000);
+//        try {
+//            processor.execute();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }
