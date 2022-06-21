@@ -7,20 +7,23 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class ExchangeRate extends Thread {
+public class ExchangeRates extends Thread {
 
-    private static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeRates.class);
 
     private static final double MAX_RATE = 2.0;
 
-    private Map<Currency, BigDecimal> rates = new HashMap<>();
+    private Map<Currency, BigDecimal> rates;
 
     private Random random = new Random();
+
+    public ExchangeRates(Map<Currency, BigDecimal> rates) {
+        this.rates = rates;
+    }
 
     @Override
     public void run() {
@@ -47,7 +50,7 @@ public class ExchangeRate extends Thread {
         }
     }
 
-    public Map<Currency, BigDecimal> getRates() {
+    public synchronized Map<Currency, BigDecimal> getRates() {
         return rates;
     }
 }

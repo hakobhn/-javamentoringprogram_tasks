@@ -1,11 +1,11 @@
 package com.epam.multithreading.training.task5;
 
-import com.epam.multithreading.training.task5.exchange.ExchangeRate;
+import com.epam.multithreading.training.task5.exchange.ExchangeProcessor;
 import com.epam.multithreading.training.task5.model.AccountDTO;
 import com.epam.multithreading.training.task5.model.BankAccountDTO;
 import com.epam.multithreading.training.task5.services.AccountService;
 import com.epam.multithreading.training.task5.services.impl.AccountServiceImpl;
-import com.epam.multithreading.training.task5.util.StringUtils;
+import com.epam.multithreading.training.task5.util.RandomizationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 public class BankApplication {
 
-    private Logger logger = LoggerFactory.getLogger(BankApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(BankApplication.class);
 
     private final Random random = new Random();
 
@@ -32,15 +32,15 @@ public class BankApplication {
     public void process() {
         accountService.deleteAll();
 
-        List<AccountDTO> accounts = generateAccounts(5);
+        List<AccountDTO> accounts = generateAccounts(10);
         accountService.createAll(accounts);
 
         logger.info("Accounts: {}", accountService.getAll());
 
-        ExchangeRate exchangeRate = new ExchangeRate();
-        exchangeRate.start();
+        ExchangeProcessor processor = new ExchangeProcessor();
+        processor.start();
         try {
-            exchangeRate.join();
+            processor.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -52,22 +52,22 @@ public class BankApplication {
         return IntStream.range(0, count).mapToObj(
                 i -> {
                     AccountDTO accountDTO = new AccountDTO();
-                    accountDTO.setSsn(StringUtils.generateSSN());
-                    accountDTO.setFullName(StringUtils.generateFullName());
-                    accountDTO.setDob(StringUtils.generateDOB());
+                    accountDTO.setSsn(RandomizationUtils.generateSSN());
+                    accountDTO.setFullName(RandomizationUtils.generateFullName());
+                    accountDTO.setDob(RandomizationUtils.generateDOB());
                     accountDTO.setBankAccounts(generateBankAccounts());
                     return accountDTO;
                 }).collect(Collectors.toList());
     }
 
     public List<BankAccountDTO> generateBankAccounts() {
-        return IntStream.range(0, random.nextInt(5)).mapToObj(
+        return IntStream.range(0, random.nextInt(3)+2).mapToObj(
                 i -> {
                     BankAccountDTO bankAccountDTO = new BankAccountDTO();
-                    bankAccountDTO.setName(StringUtils.generateBankName());
-                    bankAccountDTO.setCurrency(StringUtils.generateCurrency());
-                    bankAccountDTO.setCardType(StringUtils.generateCardType());
-                    bankAccountDTO.setBalance(StringUtils.generateBalance());
+                    bankAccountDTO.setName(RandomizationUtils.generateBankName());
+                    bankAccountDTO.setCurrency(RandomizationUtils.generateCurrency());
+                    bankAccountDTO.setCardType(RandomizationUtils.generateCardType());
+                    bankAccountDTO.setBalance(RandomizationUtils.generateBalance());
                     return bankAccountDTO;
                 }).collect(Collectors.toList());
 

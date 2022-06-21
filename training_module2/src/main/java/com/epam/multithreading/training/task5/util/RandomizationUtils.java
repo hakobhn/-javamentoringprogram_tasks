@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class StringUtils {
+public class RandomizationUtils {
 
     private static final Random rand = new Random();
 
@@ -27,7 +27,8 @@ public class StringUtils {
             "Wells Fargo & Co.","Truist Bank","Fifth Third Bank","Goldman Sachs Group Inc.","Morgan Stanley","Citigroup Inc."
             ,"TD Group US Holdings LLC"});
 
-    private static final double MAX_BALANCE = 100000d;
+    private static final double MAX_BALANCE = 1000000d;
+    private static final double MAX_EXCHANGE = 10000d;
 
     public static String generateFullName() {
         return new StringBuilder(names.get(rand.nextInt(names.size()))+" "+surnames.get(rand.nextInt(surnames.size()))).toString();
@@ -48,10 +49,7 @@ public class StringUtils {
     }
 
     public static String generateBankName() {
-        int number = rand.nextInt(999999);
-
-        // this will convert any number sequence into 6 character.
-        return String.format("%06d", number);
+        return banks.get(rand.nextInt(banks.size()));
     }
 
     public static Currency generateCurrency() {
@@ -65,6 +63,10 @@ public class StringUtils {
     }
 
     public static BigDecimal generateBalance() {
+        return BigDecimal.valueOf(MAX_BALANCE*(rand.nextDouble())).setScale(1, RoundingMode.HALF_UP);
+    }
+
+    public static BigDecimal generateExchangeAmount() {
         return BigDecimal.valueOf(MAX_BALANCE*(rand.nextDouble())).setScale(1, RoundingMode.HALF_UP);
     }
 
