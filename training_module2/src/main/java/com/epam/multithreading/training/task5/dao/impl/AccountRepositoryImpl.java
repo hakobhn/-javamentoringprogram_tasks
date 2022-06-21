@@ -15,6 +15,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,6 +71,22 @@ public class AccountRepositoryImpl implements AccountRepository {
         if (old == null) {
             throw new NotFoundException("Account with uuid: "+old.getUuid()+" not found...");
         }
+        Path path =  Path.of(ACCOUNT_PATH+ File.separator + account.getUuid()+".json");
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        Path oldPath = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() +
+                "-"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"))+"-history.json");
+        try (PrintWriter out = new PrintWriter(new FileWriter(oldPath.toFile()))) {
+            out.write( Files.readString(path, Charset.forName("UTF-8")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         delete(old.getUuid());
         JSONObject json = AccountSerializer.serialize(account);
 
@@ -80,7 +99,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             }
         }
 
-        Path path = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() + ".json");
+        path = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() + ".json");
         if (!Files.exists(path)) {
             try {
                 Files.createFile(path);

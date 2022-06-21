@@ -23,24 +23,30 @@ public class ExchangeRates extends Thread {
 
     public ExchangeRates(Map<Currency, BigDecimal> rates) {
         this.rates = rates;
+
+        Arrays.stream(Currency.values()).forEach(
+                                cur -> {
+                                    if (cur.equals(Currency.USD)) {
+                                        rates.put(cur, BigDecimal.valueOf(1.0));
+                                    }
+                                    BigDecimal percent = BigDecimal.valueOf(MAX_RATE*2*(random.nextDouble() - 0.5))
+                                            .setScale(1, RoundingMode.HALF_UP);
+                                    rates.put(cur, BigDecimal.valueOf(cur.getValue() + cur.getValue()*percent.doubleValue()/100.0));
+                                });
     }
 
     @Override
     public void run() {
         while (true) {
-            rates = Arrays.stream(Currency.values())
-                    .collect(
-                            Collectors.toMap(
-                                    cur -> cur,
-                                    cur -> {
-                                        if (cur.equals(Currency.USD)) {
-                                            return BigDecimal.valueOf(1.0);
-                                        }
-                                        BigDecimal percent = BigDecimal.valueOf(MAX_RATE*2*(random.nextDouble() - 0.5))
-                                                .setScale(1, RoundingMode.HALF_UP);
-                                        return BigDecimal.valueOf(cur.getValue() + cur.getValue()*percent.doubleValue()/100.0);
-                                    })
-                    );
+            Arrays.stream(Currency.values()).forEach(
+            cur -> {
+                if (cur.equals(Currency.USD)) {
+                    rates.put(cur, BigDecimal.valueOf(1.0));
+                }
+                BigDecimal percent = BigDecimal.valueOf(MAX_RATE*2*(random.nextDouble() - 0.5))
+                        .setScale(1, RoundingMode.HALF_UP);
+                rates.put(cur, BigDecimal.valueOf(cur.getValue() + cur.getValue()*percent.doubleValue()/100.0));
+            });
             logger.info("Rates: " + rates);
             try {
                 Thread.sleep(5000);
@@ -48,9 +54,5 @@ public class ExchangeRates extends Thread {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public synchronized Map<Currency, BigDecimal> getRates() {
-        return rates;
     }
 }

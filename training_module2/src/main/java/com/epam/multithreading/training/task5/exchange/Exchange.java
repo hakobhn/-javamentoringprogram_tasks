@@ -28,6 +28,7 @@ public class Exchange implements Callable<BigDecimal> {
 
     public Exchange(Map<Currency, BigDecimal> rates, AccountDTO account, BankAccountDTO source, BankAccountDTO target, BigDecimal amount) {
         this.rates = rates;
+        this.account = account;
         this.source = source;
         this.target = target;
         this.amount = amount;
@@ -35,6 +36,8 @@ public class Exchange implements Callable<BigDecimal> {
 
     @Override
     public BigDecimal call() {
+
+        logger.info("Preparing exchange for account: {}", account.getUuid());
 
         BigDecimal withdrawRate =  rates.get(source.getCurrency());
         BigDecimal withdrawAmount =  withdrawRate.multiply(amount);
