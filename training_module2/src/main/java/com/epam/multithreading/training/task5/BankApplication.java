@@ -32,7 +32,7 @@ public class BankApplication {
     public void process() {
         accountService.deleteAll();
 
-        List<AccountDTO> accounts = generateAccounts(10);
+        List<AccountDTO> accounts = generateAccounts(1);
         accountService.createAll(accounts);
 
         logger.info("Accounts: {}", accountService.getAll());
@@ -61,7 +61,7 @@ public class BankApplication {
     }
 
     public List<BankAccountDTO> generateBankAccounts() {
-        return IntStream.range(0, random.nextInt(3)+2).mapToObj(
+        return IntStream.range(0, 2).mapToObj(
                 i -> {
                     BankAccountDTO bankAccountDTO = new BankAccountDTO();
                     bankAccountDTO.setName(RandomizationUtils.generateBankName());

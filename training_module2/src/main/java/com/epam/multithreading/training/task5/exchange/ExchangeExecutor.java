@@ -18,8 +18,6 @@ public class ExchangeExecutor extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(ExchangeExecutor.class);
 
-    private AccountService accountService = new AccountServiceImpl();
-
     private List<Exchange> exchanges;
 
     public ExchangeExecutor(List<Exchange> exchanges) {
@@ -33,18 +31,20 @@ public class ExchangeExecutor extends Thread {
 
         while (true) {
 
-            exchanges.stream().forEach(
-                    exchange -> {
-                        Future<BigDecimal> amount = executorService.submit(exchange);
-                        try {
-                            logger.info("Exchanged amounts: {}", amount.get());
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        } catch (ExecutionException e) {
-                            logger.error("Unable to execute exchange. Error: {}", e.getLocalizedMessage());
+            synchronized (exchanges) {
+                exchanges.stream().forEach(
+                        exchange -> {
+                            Future<BigDecimal> amount = executorService.submit(exchange);
+                            try {
+                                logger.info("Exchanged amounts: {}", amount.get());
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            } catch (ExecutionException e) {
+                                logger.error("Unable to execute exchange. Error: {}", e.getLocalizedMessage());
+                            }
                         }
-                    }
-            );
+                );
+            }
 
 //            //shut down the executor service now
 //            logger.info("shut down the executor service");

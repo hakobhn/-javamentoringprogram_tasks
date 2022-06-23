@@ -8,6 +8,8 @@ public class CollectionUtils {
     private static final Random rand = new Random();
 
     public static <E> E getRandomItemFromList(List<E> coll) {
+        if (coll == null || coll.isEmpty())
+            return null;
         return coll.get(rand.nextInt(coll.size()));
     }
 
