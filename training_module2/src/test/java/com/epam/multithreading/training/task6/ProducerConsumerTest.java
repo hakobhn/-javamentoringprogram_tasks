@@ -1,4 +1,4 @@
-package com.epam.multithreading.training.task6.task5;
+package com.epam.multithreading.training.task6;
 
 import com.epam.multithreading.training.task5.model.AccountDTO;
 import com.epam.multithreading.training.task5.model.BankAccountDTO;
