@@ -10,6 +10,10 @@ public class ArrayBlockingObjectPool implements BlockingObjectPool {
     /**
      * Creates filled pool of passed size
      *
+     * BlockingQueue implementations are thread-safe.
+     * All queuing methods achieve their effects atomically using internal locks
+     * or other forms of concurrency control.
+     *
      * @param size of pool
      */
     public ArrayBlockingObjectPool(int size) {
@@ -21,31 +25,17 @@ public class ArrayBlockingObjectPool implements BlockingObjectPool {
 
     @Override
     public Object get() {
-        synchronized (queue) {
-            try {
-                while (queue.isEmpty())
-                    queue.wait(); //wait for the queue to become not empty
-                Object obj = queue.take();
-                queue.notify();
-                return obj;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            Object obj = queue.take();
+            return obj;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void take(Object object) {
-        synchronized (queue) {
-            try {
-                while (queue.remainingCapacity() == 0)
-                    queue.wait(); //wait for the queue to become with free space
-                queue.offer(object);
-                queue.notify();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        queue.offer(object);
     }
 
     @Override

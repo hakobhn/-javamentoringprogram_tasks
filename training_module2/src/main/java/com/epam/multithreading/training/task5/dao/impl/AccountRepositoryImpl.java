@@ -4,8 +4,11 @@ import com.epam.multithreading.training.task5.dao.AccountRepository;
 import com.epam.multithreading.training.task5.dao.entity.Account;
 import com.epam.multithreading.training.task5.exception.InvalidDataSubmittedException;
 import com.epam.multithreading.training.task5.exception.NotFoundException;
+import com.epam.multithreading.training.task5.exchange.ExchangeProcessor;
 import com.epam.multithreading.training.task5.util.AccountSerializer;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,10 +27,13 @@ import java.util.stream.Collectors;
 
 public class AccountRepositoryImpl implements AccountRepository {
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountRepositoryImpl.class);
+
     private static final String ACCOUNT_PATH = "accounts";
 
     @Override
     public Account save(Account account) {
+        checkRootPath();
         if (account == null) {
             throw new InvalidDataSubmittedException("Account is null...");
         }
@@ -35,15 +41,6 @@ public class AccountRepositoryImpl implements AccountRepository {
         account.getBankAccounts().stream()
                 .forEach(bnk -> bnk.setUuid(UUID.randomUUID().toString()));
         JSONObject json = AccountSerializer.serialize(account);
-
-        Path directory = Paths.get(ACCOUNT_PATH);
-        if (! Files.exists(directory)){
-            try {
-                Files.createDirectories(directory);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         Path path = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() + ".json");
         if (!Files.exists(path)) {
@@ -64,6 +61,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Account update(Account account) {
+        checkRootPath();
         if (account == null) {
             throw new InvalidDataSubmittedException("Account is null...");
         }
@@ -90,15 +88,6 @@ public class AccountRepositoryImpl implements AccountRepository {
         delete(old.getUuid());
         JSONObject json = AccountSerializer.serialize(account);
 
-        Path directory = Paths.get(ACCOUNT_PATH);
-        if (! Files.exists(directory)){
-            try {
-                Files.createDirectories(directory);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         path = Path.of(ACCOUNT_PATH + File.separator + account.getUuid() + ".json");
         if (!Files.exists(path)) {
             try {
@@ -118,7 +107,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Account findById(String uuid) {
-
+        checkRootPath();
         Path path = Path.of(ACCOUNT_PATH + File.separator + uuid + ".json");
         if (!Files.exists(path)) {
             throw new NotFoundException("Account with uuid: "+uuid+" not found");
@@ -136,6 +125,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public void delete(String uuid) {
+        checkRootPath();
         Path path = Path.of(ACCOUNT_PATH + File.separator + uuid + ".json");
         if (!Files.exists(path)) {
             throw new NotFoundException("Account with uuid: "+uuid+" not found");
@@ -149,6 +139,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> findAll() {
+        checkRootPath();
         Path path = Path.of(ACCOUNT_PATH + File.separator);
         try {
             return Files.list(path)
@@ -156,23 +147,27 @@ public class AccountRepositoryImpl implements AccountRepository {
                     .filter(File::isFile)
                     .map(File::toPath)
                     .map(f -> {
+                        String result ="";
                         try {
-                            return Files.readString(f, Charset.forName("UTF-8"));
+                            result = Files.readString(f, Charset.forName("UTF-8"));
                         } catch (IOException e) {
+                            logger.error("Caught exception on reading file. Error: {}", e.getLocalizedMessage());
                             throw new RuntimeException(e);
                         }
+                        return result;
                     })
                     .map(JSONObject::new)
                     .map(AccountSerializer::deserialize)
                     .collect(Collectors.toUnmodifiableList());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Caught exception on reading file. Error: {}", e.getLocalizedMessage());
         }
-        return null;
+        return List.of();
     }
 
     @Override
     public void deleteAll() {
+        checkRootPath();
         Path path = Path.of(ACCOUNT_PATH);
         try {
             Files.list(path)
@@ -185,6 +180,17 @@ public class AccountRepositoryImpl implements AccountRepository {
                     });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkRootPath() {
+        Path rootDir = Path.of(ACCOUNT_PATH);
+        if (! Files.exists(rootDir)){
+            try {
+                Files.createDirectories(rootDir);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

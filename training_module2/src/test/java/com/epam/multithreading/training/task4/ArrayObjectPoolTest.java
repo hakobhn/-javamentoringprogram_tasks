@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class BlockingObjectPoolTest {
+class ArrayObjectPoolTest {
 
-    private static Logger logger = LoggerFactory.getLogger(BlockingObjectPoolTest.class);
+    private static Logger logger = LoggerFactory.getLogger(ArrayObjectPoolTest.class);
 
     @Test
     void testBlockingObjectQueue() {
-        BlockingObjectPool pool = new ArrayBlockingObjectPool(10);
+        BlockingObjectPool pool = new ArrayObjectPool(10);
         assertNotNull(pool.get());
 
         Thread adder = new Thread(() -> {
