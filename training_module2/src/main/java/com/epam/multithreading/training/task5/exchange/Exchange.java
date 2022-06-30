@@ -53,8 +53,14 @@ public class Exchange implements Callable<BigDecimal> {
                 source.setBalance(source.getBalance().subtract(withdrawAmount));
                 target.setBalance(target.getBalance().add(depositAmount));
 
-                logger.info("Updating account: {}", account);
+                logger.info("=================Updating account: {}", account);
                 accountService.update(account);
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
