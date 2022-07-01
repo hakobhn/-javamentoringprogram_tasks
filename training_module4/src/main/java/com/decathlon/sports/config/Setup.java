@@ -6,6 +6,7 @@ import com.decathlon.sports.dao.repository.SportRepository;
 import com.decathlon.sports.dto.SportDTO;
 import com.decathlon.sports.dto.SportFullDataDTO;
 import com.decathlon.sports.service.SportConsumerService;
+import org.reactivestreams.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.PostConstruct;
 import java.util.stream.Collectors;
+
+import static io.reactivex.internal.operators.observable.ObservableBlockingSubscribe.subscribe;
 
 @Component
 public class Setup {
@@ -42,46 +45,17 @@ public class Setup {
                 .thenMany(
                         Flux
                                 .just(sports.getData())
-                                .flatMap(value -> Mono.just(value))
-//                                .subscribeOn(Schedulers.parallel())
-                                )
-                .subscribe(data -> {
-                    logger.info("Consumed: " + data);
-                    for (SportDTO sportDTO : data) {
-                        Sport spc = sportDtoToEntityConverter.convert(sportDTO);
-                        logger.info("sport: " + spc);
-                        sportRepository.save(spc);
-                    }
-//                    data.stream()
-////                            .map(sportDtoToEntityConverter::convert)
-//                            .map(sp -> {
-//                                Sport spc = sportDtoToEntityConverter.convert(sp);
-//                                logger.info("sport: " + spc);
-//                                return spc;
-//                            })
-//                            .map(sportRepository::save);
-//                            .map(entity -> {
-//                                entity.flux()
-//                                        .subscribe(sport -> System.out.println(sport.toString()));
-//                                return entity;
-//                            })
-//                            .collect(Collectors.toList());
-                });
-//                                .map(data -> data.stream()
-//                                        .map(sportDtoToEntityConverter::convert)
-//                                        .map(sportRepository::save)
-//                                        .map(entity -> {
-//                                            entity.flux()
-//                                                    .subscribe(sport -> System.out.println(sport.toString()));
-//                                            return entity;
-//                                        })
-//                                        .collect(Collectors.toList()))
-//                )
-//                .thenMany(sportRepository.findAll())
-//                .subscribe(sport -> System.out.println("saving " + sport.toString()));
-//
-        sportRepository.findAll()
-                .subscribe(sport -> System.out.println(sport.toString()));
+                                .map(data -> data.stream()
+                                        .map(sportDtoToEntityConverter::convert)
+                                        .map(sportRepository::save)
+                                        .map(entity -> {
+                                            entity.flux().subscribe(sport -> System.out.println(sport.toString()));
+                                            return entity;
+                                        })
+                                        .collect(Collectors.toList()))
+                )
+                .thenMany(sportRepository.findAll())
+                .subscribe(sport -> System.out.println("saving " + sport.toString()));
     }
 
 //    @PostConstruct

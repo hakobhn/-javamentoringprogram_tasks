@@ -48,7 +48,7 @@ public class SportServiceImpl implements SportService {
                                 ));
     }
 
-    public Flux<Sport> findAll() {
+    public Flux<Sport> getAll() {
         return sportRepository.findAll();
     }
 

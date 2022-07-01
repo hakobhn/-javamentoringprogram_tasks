@@ -12,6 +12,6 @@ public interface SportService {
 
     Mono<Object> create(String name);
 
-    Flux<Sport> findAll();
+    Flux<Sport> getAll();
 
 }

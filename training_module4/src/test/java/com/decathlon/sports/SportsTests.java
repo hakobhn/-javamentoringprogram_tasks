@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource(properties = "spring.mongodb.embedded.version=3.5.5")
-public class SportsTests {
+class SportsTests {
     @Autowired
     private SportRepository repository;
 
