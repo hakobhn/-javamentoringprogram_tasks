@@ -7,6 +7,7 @@ import com.decathlon.sports.dto.SportDTO;
 import com.decathlon.sports.dto.SportFullDataDTO;
 import com.decathlon.sports.service.SportConsumerService;
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.PostConstruct;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static io.reactivex.internal.operators.observable.ObservableBlockingSubscribe.subscribe;
 
@@ -53,26 +55,44 @@ public class Setup {
                                             return entity;
                                         })
                                         .collect(Collectors.toList()))
-                )
-                .thenMany(sportRepository.findAll())
-                .subscribe(sport -> System.out.println("saving " + sport.toString()));
+                ).blockLast();
+//                .thenMany(sportRepository.findAll())
+//                .subscribe(sport -> System.out.println("saving " + sport.toString()));
     }
 
-//    @PostConstruct
-    public void etlWithBackpressure() {
-        Mono<SportFullDataDTO> response = sportConsumerService.fetchSports();
-        SportFullDataDTO sports = response.block();
-
-        sportRepository
-                .deleteAll()
-                .thenMany(
-                        Flux
-                                .just(sports.getData())
-                                .flatMap(value ->
-                                                Mono.just(value))
-                                                        .subscribeOn(Schedulers.parallel()))
-                                .subscribe(value -> {
-                                    logger.info("Consumed: " + value);
-                                });
-    }
+////    @PostConstruct
+//    public void etlWithBackpressure() {
+//        Mono<SportFullDataDTO> response = sportConsumerService.fetchSports();
+//        SportFullDataDTO sports = response.block();
+//
+//        Flux.just(IntStream.range(0, 10))
+//                .log()
+//                .subscribe(new Subscriber<Integer>() {
+//                    private Subscription s;
+//                    int onNextAmount;
+//
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        this.s = s;
+//                        s.request(2);
+//                    }
+//
+//                    @Override
+//                    public void onNext(Integer integer) {
+//
+//                        onNextAmount++;
+//                        if (onNextAmount % 2 == 0) {
+//                            s.request(2);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                    }
+//                });
+//    }
 }
