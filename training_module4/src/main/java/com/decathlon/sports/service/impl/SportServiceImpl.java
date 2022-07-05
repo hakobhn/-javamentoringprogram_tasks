@@ -23,7 +23,7 @@ public class SportServiceImpl implements SportService {
     }
 
     public Mono<Sport> findByName(String name) {
-        Mono<Sport> fallback = Mono.error(new NotFoundException("Sport with name "+ name +" not found"));
+        Mono<Sport> fallback = Mono.error(new NotFoundException("Sport with name " + name + " not found"));
         return sportRepository.findByNameIgnoreCase(Mono.just(name)).switchIfEmpty(fallback);
     }
 
@@ -32,14 +32,14 @@ public class SportServiceImpl implements SportService {
     }
 
     public Mono<Object> create(String name) {
-        Mono<Sport> fallback = Mono.error(new ResourceAlreadyExists("Sport with name "+ name +" already exists"));
+        Mono<Sport> fallback = Mono.error(new ResourceAlreadyExists("Sport with name " + name + " already exists"));
 //        sportRepository.findByNameIgnoreCase(Mono.just(name)).switchIfEmpty(fallback);
 
         Mono<Boolean> monoPresent = sportRepository.findByNameIgnoreCase(Mono.just(name)).hasElement();
         return monoPresent.map(
                 isAvailable -> isAvailable ? fallback.block() :
                         sportRepository.maxId()
-                                .subscribe( id -> {
+                                .subscribe(id -> {
                                             Sport sport = new Sport();
                                             sport.setId(++id);
                                             sport.setName(name);

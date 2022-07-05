@@ -14,7 +14,7 @@ public abstract class AbstractModel<T extends Serializable> implements Serializa
     @Id
     private ObjectId _id;
 
-    @Field(value="id")
+    @Field(value = "id")
     protected T id;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

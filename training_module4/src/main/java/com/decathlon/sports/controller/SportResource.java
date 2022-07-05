@@ -2,7 +2,6 @@ package com.decathlon.sports.controller;
 
 import com.decathlon.sports.dao.model.Sport;
 import com.decathlon.sports.service.SportService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

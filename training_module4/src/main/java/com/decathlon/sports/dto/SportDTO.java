@@ -63,5 +63,20 @@ public class SportDTO {
         public void setSlug(String slug) {
             this.slug = slug;
         }
+
+        @Override
+        public String toString() {
+            return "AttributesDTO{" +
+                    "name='" + name + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SportDTO{" +
+                "id=" + id +
+                ", attributes=" + attributes +
+                '}';
     }
 }

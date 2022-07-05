@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Sport extends AbstractModel<Integer> {
 
-    @Indexed(unique=true)
+    @Indexed(unique = true)
     private String name;
 
     private String description;

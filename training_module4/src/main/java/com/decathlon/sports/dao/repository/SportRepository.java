@@ -50,6 +50,6 @@ public interface SportRepository extends AbstractRepository<Sport, Integer> {
     Flux<Sport> findWithTailableCursorBy();
 
 
-    @Aggregation(pipeline = { "{$group: { _id: '', total: {$max: $id }}}" })
+    @Aggregation(pipeline = {"{$group: { _id: '', total: {$max: $id }}}"})
     public Mono<Integer> maxId();
 }
