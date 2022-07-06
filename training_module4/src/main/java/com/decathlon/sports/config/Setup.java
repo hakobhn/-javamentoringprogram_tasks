@@ -58,14 +58,6 @@ public class Setup {
     @PostConstruct
     public void etlWithBackpressure() {
         Flux<List<SportDTO>> response = sportConsumerService.fetchSports();
-//        SportFullDataDTO sports = response.block();
-
-//        Flux.range(1, 10)
-//                .log("category", Level.ALL, SignalType.ON_NEXT, SignalType.ON_ERROR)
-//                .limitRate(10, 0)
-//                .delayElements(Duration.ofMillis(100))
-//                .doOnNext(System.out::println)
-//                .subscribe(System.out::println);
 
         sportRepository
                 .deleteAll()
