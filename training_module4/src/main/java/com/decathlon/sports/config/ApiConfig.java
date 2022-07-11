@@ -46,7 +46,7 @@ public class ApiConfig {
 
     @Bean
     public WebClient webClient() {
-        final var tcpClient = TcpClient
+        final TcpClient tcpClient = TcpClient
                 .create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT)
                 .doOnConnected(connection -> {

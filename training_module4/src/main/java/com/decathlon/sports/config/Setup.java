@@ -80,7 +80,7 @@ public class Setup {
                                             entity.flux().subscribe(sport -> System.out.println(sport.toString()));
                                             return entity;
                                         })
-                                        .collect(Collectors.toUnmodifiableList()))
+                                        .collect(Collectors.toList()))
                 ).blockLast();
     }
 }
