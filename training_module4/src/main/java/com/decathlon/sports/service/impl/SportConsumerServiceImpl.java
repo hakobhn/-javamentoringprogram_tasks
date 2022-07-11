@@ -6,6 +6,8 @@ import com.decathlon.sports.service.SportConsumerService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class SportConsumerServiceImpl implements SportConsumerService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SportConsumerServiceImpl.class);
 
     public static final String SPORTS_API = "https://sports.api.decathlon.com/sports";
     private final WebClient webClient;
@@ -45,11 +49,11 @@ public class SportConsumerServiceImpl implements SportConsumerService {
                 .map(s -> s.path("data"))
                 .map(s -> {
                     try {
-                        return objectMapper.readValue(s.traverse(), new TypeReference<List<SportDTO>>() {
+                        return objectMapper.readValue(s.traverse(), new TypeReference<>() {
                         });
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        return new ArrayList<SportDTO>();
+                        logger.error("Caught exception during sports list conversion.", e);
+                        return new ArrayList<>();
                     }
                 });
     }

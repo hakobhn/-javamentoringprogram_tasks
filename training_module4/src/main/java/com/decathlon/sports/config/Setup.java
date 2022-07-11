@@ -14,14 +14,16 @@ import reactor.core.publisher.SignalType;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 @Component
 public class Setup {
 
-    private Logger logger = LoggerFactory.getLogger(Setup.class);
+    private static final Logger logger = LoggerFactory.getLogger(Setup.class);
 
     private final SportRepository sportRepository;
     private final SportConsumerService sportConsumerService;
@@ -43,12 +45,12 @@ public class Setup {
                 .deleteAll()
                 .thenMany(
                         Flux
-                                .just(sports.getData())
-                                .map(data -> data.stream()
+                                .just(Optional.ofNullable(sports).map(SportFullDataDTO::getData))
+                                .map(data -> data.orElse(new ArrayList<>()).stream()
                                         .map(sportDtoToEntityConverter::convert)
                                         .map(sportRepository::save)
                                         .map(entity -> {
-                                            entity.flux().subscribe(sport -> System.out.println(sport.toString()));
+                                            entity.flux().subscribe(sport -> logger.info(sport.toString()));
                                             return entity;
                                         })
                                         .collect(Collectors.toList()))
@@ -66,18 +68,16 @@ public class Setup {
                                 .log("category", Level.ALL, SignalType.ON_NEXT, SignalType.ON_ERROR)
                                 .limitRate(20)
                                 .delayElements(Duration.ofMillis(1000))
-                                .doOnNext(data -> {
-                                    System.out.println("On next data: " + data);
-                                })
+                                .doOnNext(data -> logger.debug("On next data: {}", data))
                                 .map(data -> data.stream()
                                         .map(dt -> {
-                                            System.out.println(dt);
+                                            logger.debug("Date: {}", dt);
                                             return dt;
                                         })
                                         .map(sportDtoToEntityConverter::convert)
                                         .map(sportRepository::save)
                                         .map(entity -> {
-                                            entity.flux().subscribe(sport -> System.out.println(sport.toString()));
+                                            entity.flux().subscribe(sport -> logger.debug(sport.toString()));
                                             return entity;
                                         })
                                         .collect(Collectors.toList()))

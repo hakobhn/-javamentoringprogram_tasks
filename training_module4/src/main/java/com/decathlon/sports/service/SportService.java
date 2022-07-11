@@ -10,7 +10,7 @@ public interface SportService {
 
     Flux<Sport> findByLikeName(String name);
 
-    Mono<Object> create(String name);
+    Mono<Void> create(String name);
 
     Flux<Sport> getAll();
 

@@ -40,7 +40,7 @@ public class SportResource {
     }
 
     @PostMapping("{sportName}")
-    public Mono<?> addSport(@PathVariable("sportName") String name) {
+    public Mono<Void> addSport(@PathVariable("sportName") String name) {
         return sportService.create(name);
     }
 
