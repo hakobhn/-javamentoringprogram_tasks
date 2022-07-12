@@ -25,7 +25,9 @@ class SportsServiceTest {
 
         assertThat(sportService.create("Test name")).isNotNull();
 
-        assertThat(sportService.create("Test name")).withFailMessage("Resource already exists");
+        assertThat(sportService.create("Test name"))
+                .withFailMessage("Resource already exists")
+                .isNotNull();
     }
 
     @Test
