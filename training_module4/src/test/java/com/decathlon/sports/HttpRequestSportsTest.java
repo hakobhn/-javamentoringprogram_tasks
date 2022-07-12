@@ -21,7 +21,7 @@ class HttpRequestSportsTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    void greetingShouldReturnAllSports() throws Exception {
+    void retrievingShouldReturnAllSports() throws Exception {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + SportResource.API_V_1_SPORT,
                 String.class)).isNotNull();
     }

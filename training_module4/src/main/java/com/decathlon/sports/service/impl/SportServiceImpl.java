@@ -5,16 +5,12 @@ import com.decathlon.sports.dao.repository.SportRepository;
 import com.decathlon.sports.exception.NotFoundException;
 import com.decathlon.sports.exception.ResourceAlreadyExists;
 import com.decathlon.sports.service.SportService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class SportServiceImpl implements SportService {
-
-    Logger logger = LoggerFactory.getLogger(SportServiceImpl.class);
 
     private final SportRepository sportRepository;
 
