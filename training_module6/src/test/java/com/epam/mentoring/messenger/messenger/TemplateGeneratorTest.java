@@ -1,9 +1,11 @@
 package com.epam.mentoring.messenger.messenger;
 
+import com.epam.mentoring.messenger.messenger.exception.InvalidDataProvidedException;
 import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
 import com.epam.mentoring.messenger.messenger.service.TemplateGenerator;
 import com.epam.mentoring.messenger.messenger.service.TemplateGeneratorImpl;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -20,12 +22,6 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class TemplateGeneratorTest {
 
-    @MockBean
-    private EmailTemplate emailTemplate;
-
-    @MockBean
-    private TemplateGenerator templateGenerator;
-
     @Test
     public void generateSimpleTemplate() {
         Map<String, String> data = new HashMap<>();
@@ -35,9 +31,27 @@ public class TemplateGeneratorTest {
         data.put("url", "https://epam.com");
         data.put("label", "Press");
 
-        emailTemplate = new EmailTemplate("Some value: #{firstName}");
+        EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
 
         assertEquals("Some value: Hakob", templateGenerator.generate(data));
+    }
+
+    @Test
+    public void processInvalidSimpleTemplate() {
+        Map<String, String> data = new HashMap<>();
+//        data.put("firstName", "Hakob");
+        data.put("lastName", "Hakobyan");
+        data.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        data.put("url", "https://epam.com");
+        data.put("label", "Press");
+
+        EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
+
+        assertThrows(InvalidDataProvidedException.class, () -> {
+            templateGenerator.generate(data);
+        });
     }
 
 }
