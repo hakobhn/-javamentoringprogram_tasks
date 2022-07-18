@@ -17,7 +17,6 @@ public class AppConfig {
     public EmailTemplate emailTemplate() throws IOException {
         File file = ResourceUtils.getFile("classpath:email_template.html");
         String content = new String(Files.readAllBytes(file.toPath()));
-        System.out.println(content);
         return new EmailTemplate(content);
     }
 }
