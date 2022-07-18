@@ -3,13 +3,14 @@ package com.epam.mentoring.messenger.messenger;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class MessengerApplicationTests {
+public class TemplateGeneratorTest {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    public void generateSimpleTemplate() {
+        fail();
+    }
 
 }
