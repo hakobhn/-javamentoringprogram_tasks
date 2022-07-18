@@ -9,10 +9,12 @@ import reactor.test.StepVerifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class BackpressureTests {
 
     @Test
-    public void whenRequestingChunks10_thenMessagesAreReceived() {
+    void whenRequestingChunks10_thenMessagesAreReceived() {
         Flux request = Flux.range(1, 50);
 
         request.subscribe(
@@ -43,7 +45,7 @@ class BackpressureTests {
     }
 
     @Test
-    public void whenRequestingChunks20_thenMessagesAreReceived() {
+    void whenRequestingChunks20_thenMessagesAreReceived() {
         List<Integer> elements = new ArrayList<>();
 
         Flux.just(1, 2, 3, 4)
@@ -55,6 +57,7 @@ class BackpressureTests {
                     @Override
                     public void onSubscribe(Subscription s) {
                         this.s = s;
+                        assertNotNull(s);
                         s.request(2);
                     }
 

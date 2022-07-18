@@ -32,7 +32,7 @@ class SportsTests {
     }
 
     @Test
-    public void givenName_whenFindName_thenFindSport() {
+    void givenName_whenFindName_thenFindSport() {
         repository.deleteAll().block();
         repository.save(given).block();
 
@@ -49,7 +49,7 @@ class SportsTests {
     }
 
     @Test
-    public void givenDescription_whenFindFirstByDescription_thenFindSport() {
+    void givenDescription_whenFindFirstByDescription_thenFindSport() {
         repository.deleteAll().block();
         repository.save(given).block();
 
@@ -79,7 +79,7 @@ class SportsTests {
     }
 
     @Test
-    public void givenSport_whenSave_thenSaveSport() {
+    void givenSport_whenSave_thenSaveSport() {
         repository.deleteAll().block();
         Mono<Sport> sportMono = repository.save(given);
 
