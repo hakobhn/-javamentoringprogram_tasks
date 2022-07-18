@@ -30,6 +30,9 @@ public class TemplateGeneratorTest {
         data.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         data.put("url", "https://epam.com");
         data.put("label", "Press");
+        data.put("url", "https://epam.com");
+        data.put("unsubscribe", "https://epam.com");
+        data.put("home", "https://epam.com");
 
         EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
         TemplateGenerator templateGenerator = new TemplateGeneratorImpl(data, emailTemplate);

@@ -31,12 +31,26 @@ class MessengerApplicationWithArgsTests {
 
 	@Test
 	void testWithFiles() throws IOException {
-		File inpFile = ResourceUtils.getFile("classpath:"+inputFile);
-		File outFile = ResourceUtils.getFile("classpath:"+outputFile);
+		ClassLoader classLoader = getClass().getClassLoader();
+		File inpFile = new File(classLoader.getResource(".").getFile() +File.separator + inputFile);
+		inpFile.createNewFile();
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
 		writer.write("firstName=Hakob");
+		writer.newLine();
 		writer.write("lastName=Hakobyan");
+		writer.newLine();
+		writer.write("date="+LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		writer.newLine();
+		writer.write("url=https://epam.com");
+		writer.newLine();
+		writer.write("label=Click");
+		writer.newLine();
+		writer.write("url=https://epam.com");
+		writer.newLine();
+		writer.write("unsubscribe=https://epam.com");
+		writer.newLine();
+		writer.write("home=https://epam.com");
 		writer.flush();
 		writer.close();
 
@@ -45,7 +59,7 @@ class MessengerApplicationWithArgsTests {
 		assertEquals("inputFile.txt", inputFile);
 		assertEquals("outputFile.txt", outputFile);
 
-		assertTrue(outFile.exists());
+		assertTrue(ResourceUtils.getFile("classpath:"+outputFile).exists());
 	}
 
 }

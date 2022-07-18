@@ -1,13 +1,13 @@
 package com.epam.mentoring.messenger.messenger.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmailTemplate {
 
-    private List<String> values = new ArrayList<>();
+    private Set<String> values = new HashSet<>();
     private String content;
 
     public EmailTemplate(String content) {
@@ -18,16 +18,15 @@ public class EmailTemplate {
     private void formFromContent() {
         Matcher m = Pattern.compile("#\\{(.*?)}").matcher(content);
         while (m.find()) {
-            System.out.println(m.group(1));
             values.add(m.group(1));
         }
     }
 
-    public List<String> getValues() {
+    public Set<String> getValues() {
         return values;
     }
 
-    public void setValues(List<String> values) {
+    public void setValues(Set<String> values) {
         this.values = values;
     }
 
