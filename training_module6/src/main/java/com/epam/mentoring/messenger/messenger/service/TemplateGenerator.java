@@ -7,6 +7,6 @@ import java.util.Map;
 @Service
 public interface TemplateGenerator {
 
-    String generate(Map<String, String> data);
+    String generate();
 
 }

@@ -32,9 +32,9 @@ public class TemplateGeneratorTest {
         data.put("label", "Press");
 
         EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
-        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(data, emailTemplate);
 
-        assertEquals("Some value: Hakob", templateGenerator.generate(data));
+        assertEquals("Some value: Hakob", templateGenerator.generate());
     }
 
     @Test
@@ -47,10 +47,10 @@ public class TemplateGeneratorTest {
         data.put("label", "Press");
 
         EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
-        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(data, emailTemplate);
 
         assertThrows(InvalidDataProvidedException.class, () -> {
-            templateGenerator.generate(data);
+            templateGenerator.generate();
         });
     }
 

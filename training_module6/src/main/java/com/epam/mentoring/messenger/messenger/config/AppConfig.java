@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class AppConfig {
@@ -18,5 +20,10 @@ public class AppConfig {
         File file = ResourceUtils.getFile("classpath:email_template.html");
         String content = new String(Files.readAllBytes(file.toPath()));
         return new EmailTemplate(content);
+    }
+
+    @Bean
+    public Map<String, String> inputs() {
+        return new HashMap<>();
     }
 }
