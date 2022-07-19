@@ -1,11 +1,12 @@
 package com.epam.mentoring.messenger.messenger.service;
 
+import java.io.File;
 import java.util.Map;
 
 public interface TemplateGenerator {
 
     String generate(Map<String, String> inputs);
 
-    String generate();
+    String generateIntoFile(Map<String, String> inputs, File outFile);
 
 }

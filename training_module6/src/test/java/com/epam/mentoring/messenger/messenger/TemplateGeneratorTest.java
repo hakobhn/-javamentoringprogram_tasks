@@ -5,22 +5,31 @@ import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
 import com.epam.mentoring.messenger.messenger.service.TemplateGenerator;
 import com.epam.mentoring.messenger.messenger.service.TemplateGeneratorImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(args={"--test=test"})
+@SpringBootTest(properties = {
+        "command.line.runner.enabled=false",
+        "application.runner.enabled=false" })
 public class TemplateGeneratorTest {
+
+    @Test
+    public void testSimpleTemplateGeneration() {
+        Map<String, String> data = new HashMap<>();
+
+        EmailTemplate emailTemplate = mock(EmailTemplate.class);
+        when(emailTemplate.getContent()).thenReturn("Some value: Hakob");
+
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
+
+        assertEquals("Some value: Hakob", templateGenerator.generate(data));
+    }
 
     @Test
     public void generateSimpleTemplate() {

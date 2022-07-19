@@ -9,20 +9,16 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class TemplateGeneratorImpl implements TemplateGenerator {
 
-    @Value("${output.file:}")
-    private String outputFile;
+//    @Value("${output.file:}")
+//    private String outputFile;
 
     private final EmailTemplate emailTemplate;
-    @Autowired
-    private Map<String, String> inputs;
 
     public TemplateGeneratorImpl(EmailTemplate emailTemplate) {
         this.emailTemplate = emailTemplate;
@@ -43,22 +39,18 @@ public class TemplateGeneratorImpl implements TemplateGenerator {
     }
 
     @Override
-    public String generate() {
+    public String generateIntoFile(Map<String, String> inputs, File outFile) {
 
         String result = generate(inputs);
 
         try {
-            if (!outputFile.isEmpty()) {
-                ClassLoader classLoader = getClass().getClassLoader();
-                File outFile = new File(classLoader.getResource(".").getFile() +File.separator + outputFile);
-                if (outFile.exists()) {
-                    outFile.delete();
-                }
-                BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
-                writer.write(result);
-                writer.flush();
-                writer.close();
+            if (outFile.exists()) {
+                outFile.delete();
             }
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+            writer.write(result);
+            writer.flush();
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
