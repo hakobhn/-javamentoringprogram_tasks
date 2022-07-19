@@ -2,6 +2,7 @@ package com.epam.mentoring.messenger.messenger.service;
 
 import com.epam.mentoring.messenger.messenger.exception.InvalidDataProvidedException;
 import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +17,19 @@ import java.util.function.Function;
 @Service
 public class TemplateGeneratorImpl implements TemplateGenerator {
 
-    @Value("${output.file}")
+    @Value("${output.file:}")
     private String outputFile;
 
     private final EmailTemplate emailTemplate;
-    private final Map<String, String> inputs;
+    @Autowired
+    private Map<String, String> inputs;
 
-    public TemplateGeneratorImpl(Map<String, String> inputs, EmailTemplate emailTemplate) {
-        this.inputs = inputs;
+    public TemplateGeneratorImpl(EmailTemplate emailTemplate) {
         this.emailTemplate = emailTemplate;
     }
 
     @Override
-    public String generate() {
+    public String generate(Map<String, String> inputs) {
         if (!inputs.keySet().containsAll(emailTemplate.getValues())) {
             throw new InvalidDataProvidedException("Not all data for placeholders provided");
         }
@@ -38,10 +39,21 @@ public class TemplateGeneratorImpl implements TemplateGenerator {
                 .reduce(Function.identity(), Function::andThen)
                 .apply(result);
 
+        return result;
+    }
+
+    @Override
+    public String generate() {
+
+        String result = generate(inputs);
+
         try {
-            if (outputFile != null) {
+            if (!outputFile.isEmpty()) {
                 ClassLoader classLoader = getClass().getClassLoader();
                 File outFile = new File(classLoader.getResource(".").getFile() +File.separator + outputFile);
+                if (outFile.exists()) {
+                    outFile.delete();
+                }
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
                 writer.write(result);
                 writer.flush();

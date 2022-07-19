@@ -27,33 +27,27 @@ public class TemplateGeneratorTest {
         Map<String, String> data = new HashMap<>();
         data.put("firstName", "Hakob");
         data.put("lastName", "Hakobyan");
-        data.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        data.put("url", "https://epam.com");
         data.put("label", "Press");
         data.put("url", "https://epam.com");
-        data.put("unsubscribe", "https://epam.com");
-        data.put("home", "https://epam.com");
 
         EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
-        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(data, emailTemplate);
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
 
-        assertEquals("Some value: Hakob", templateGenerator.generate());
+        assertEquals("Some value: Hakob", templateGenerator.generate(data));
     }
 
     @Test
     public void processInvalidSimpleTemplate() {
         Map<String, String> data = new HashMap<>();
-//        data.put("firstName", "Hakob");
         data.put("lastName", "Hakobyan");
-        data.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        data.put("url", "https://epam.com");
         data.put("label", "Press");
+        data.put("url", "https://epam.com");
 
         EmailTemplate emailTemplate = new EmailTemplate("Some value: #{firstName}");
-        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(data, emailTemplate);
+        TemplateGenerator templateGenerator = new TemplateGeneratorImpl(emailTemplate);
 
         assertThrows(InvalidDataProvidedException.class, () -> {
-            templateGenerator.generate();
+            templateGenerator.generate(data);
         });
     }
 

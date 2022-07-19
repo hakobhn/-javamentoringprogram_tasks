@@ -10,15 +10,13 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(args={"--test=test"})
+@SpringBootTest(properties = {
+				"command.line.runner.enabled=false",
+				"application.runner.enabled=false" })
 class MessengerApplicationTests {
-
-	@SpyBean
-	MessengerApplication application;
 
 	@Test
 	void contextLoads() {
-		verify(application, times(1)).run(any());
 	}
 
 }
