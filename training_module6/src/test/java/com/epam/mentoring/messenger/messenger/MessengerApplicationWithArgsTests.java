@@ -67,7 +67,30 @@ class MessengerApplicationWithArgsTests {
 		writer.close();
 
 		assertEquals("Some value: Hakob",
-				templateGenerator.generate(dataLoader.loadDataFromFile(inpFile)));
+				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), new File(outputFile)));
+
+		assertEquals("inputFile.txt", inputFile);
+		assertEquals("outputFile.txt", outputFile);
+
+		assertTrue(new File(outputFile).exists());
+	}
+
+	@Test
+	void testWithValuesContainingSpecialParmsFiles() throws IOException {
+
+		BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
+		writer.write("firstName=#{Hakob}");
+		writer.newLine();
+		writer.write("lastName=Hakobyan");
+		writer.newLine();
+		writer.write("label=Click");
+		writer.newLine();
+		writer.write("url=https://epam.com");
+		writer.flush();
+		writer.close();
+
+		assertEquals("Some value: #{Hakob}",
+				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), new File(outputFile)));
 
 		assertEquals("inputFile.txt", inputFile);
 		assertEquals("outputFile.txt", outputFile);

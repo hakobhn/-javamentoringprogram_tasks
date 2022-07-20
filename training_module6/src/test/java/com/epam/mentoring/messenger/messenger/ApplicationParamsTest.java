@@ -28,11 +28,11 @@ public class ApplicationParamsTest {
     @Test
     public void testRun() throws Exception {
         CommandLineRunner runner = ctx.getBean(CommandLineRunner.class);
-        runner.run ( "--input.file=inputFile.txt", "--output.file=outputFile.txt");
+        runner.run ( "inputFile.txt", "outputFile.txt");
     }
 
     @Test
-    public void testFailRun() {
+    public void testFailRun() throws Exception {
         CommandLineRunner runner = ctx.getBean(CommandLineRunner.class);
         assertThrows(InvalidAppParamsProvidedException.class, () -> {
             runner.run ( "inputFile.txt");

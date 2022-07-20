@@ -28,13 +28,6 @@ public class CommandLineRunnerTaskExecutor implements CommandLineRunner {
     @Autowired
     private TemplateGenerator templateGenerator;
 
-//    @Value("${input.file:}")
-//    private String inputFile;
-//
-//    @Value("${output.file:}")
-//    private String outputFile;
-
-
     @Override
     public void run( String... args ) {
 
