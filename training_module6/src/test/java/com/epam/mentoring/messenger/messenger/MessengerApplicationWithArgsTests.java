@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.BufferedWriter;
@@ -18,14 +17,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(args={"--input.file=inputFile.txt", "--output.file=outputFile.txt"})
+@SpringBootTest(properties = {
+		"command.line.runner.enabled=false",
+		"application.runner.enabled=false" })
 class MessengerApplicationWithArgsTests {
-
-	@Value("${input.file}")
-	private String inputFile;
-
-	@Value("${output.file}")
-	private String outputFile;
 
 	@Autowired
 	private TemplateGenerator templateGenerator;
@@ -33,22 +28,27 @@ class MessengerApplicationWithArgsTests {
 	@Autowired
 	private DataLoader dataLoader;
 
-	File inpFile = null;
+	private File inpFile = new File("input.txt");
+	private File outFile = new File("output.txt");
 
 	@BeforeEach
 	public void setUp() throws IOException {
-		inpFile = new File(inputFile);
 		if (inpFile.exists()) {
 			inpFile.delete();
+		}
+		if (outFile.exists()) {
+			outFile.delete();
 		}
 		inpFile.createNewFile();
 	}
 
 	@AfterEach
 	public void tearDown() throws IOException {
-		inpFile = new File(inputFile);
 		if (inpFile.exists()) {
 			inpFile.delete();
+		}
+		if (outFile.exists()) {
+			outFile.delete();
 		}
 	}
 
@@ -67,16 +67,13 @@ class MessengerApplicationWithArgsTests {
 		writer.close();
 
 		assertEquals("Some value: Hakob",
-				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), new File(outputFile)));
+				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), outFile));
 
-		assertEquals("inputFile.txt", inputFile);
-		assertEquals("outputFile.txt", outputFile);
-
-		assertTrue(new File(outputFile).exists());
+		assertTrue(outFile.length() > 0);
 	}
 
 	@Test
-	void testWithValuesContainingSpecialParmsFiles() throws IOException {
+	void testWithValuesContainingSpecialParamsFiles() throws IOException {
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
 		writer.write("firstName=#{Hakob}");
@@ -90,12 +87,9 @@ class MessengerApplicationWithArgsTests {
 		writer.close();
 
 		assertEquals("Some value: #{Hakob}",
-				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), new File(outputFile)));
+				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), outFile));
 
-		assertEquals("inputFile.txt", inputFile);
-		assertEquals("outputFile.txt", outputFile);
-
-		assertTrue(new File(outputFile).exists());
+		assertTrue(outFile.length() > 0);
 	}
 
 	@Test
@@ -110,7 +104,7 @@ class MessengerApplicationWithArgsTests {
 		Map<String, String> inputs = dataLoader.loadDataFromFile(inpFile);
 
 		assertThrows(InvalidDataProvidedException.class, () -> {
-			templateGenerator.generateIntoFile(inputs, new File(outputFile));
+			templateGenerator.generateIntoFile(inputs, outFile);
 		});
 
 	}

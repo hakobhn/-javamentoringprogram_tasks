@@ -67,7 +67,7 @@ public class DataLoader {
                 line = reader.readLine();
             }
             reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return inputs;
