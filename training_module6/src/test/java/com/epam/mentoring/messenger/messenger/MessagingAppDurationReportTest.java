@@ -5,7 +5,7 @@ import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
 import com.epam.mentoring.messenger.messenger.service.TemplateGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,7 +14,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +24,8 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(properties = {
         "command.line.runner.enabled=false",
         "application.runner.enabled=false" })
-class MessagingTempDirectoryTests {
+@ExtendWith(TestDurationReportExtension.class)
+class MessagingAppDurationReportTest {
 
     @MockBean
     private EmailTemplate emailTemplate;
@@ -34,15 +35,11 @@ class MessagingTempDirectoryTests {
     @Autowired
     private DataLoader dataLoader;
 
-    File inpFile = null;
-    File outFile = null;
+    private File inpFile = new File("input.txt");
+    private File outFile = new File("output.txt");
 
     @BeforeEach
-    public void setUp(@TempDir Path tempDir) throws IOException {
-
-        inpFile = tempDir.resolve("inputs.txt").toFile();
-        outFile = tempDir.resolve("outputs.txt").toFile();
-
+    public void setUp() throws IOException {
         if (inpFile.exists()) {
             inpFile.delete();
         }
@@ -50,13 +47,11 @@ class MessagingTempDirectoryTests {
             outFile.delete();
         }
         inpFile.createNewFile();
-        outFile.createNewFile();
     }
 
     @Test
-    void givenTestMethodWithTempDirectory_whenWriteToFile_thenGenerationIsCorrect()
-            throws IOException {
-
+    void testWithFileInputs() throws IOException {
+        System.out.println("-------------------------- INTEGRATION TEST -----------------------------");
         BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
         writer.write("firstName=Hakob");
         writer.newLine();
@@ -73,6 +68,16 @@ class MessagingTempDirectoryTests {
                 templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), outFile));
 
         assertTrue(outFile.length() > 0);
+    }
+    @Test
+    void testWithMockInputs() throws IOException {
+        when(emailTemplate.getContent()).thenReturn("Some value: #{firstName} #{lastName}");
+        assertEquals("Some value: Adam Smith", templateGenerator.generate(
+                new HashMap<String, String>() {{
+                    put("firstName", "Adam");
+                    put("lastName", "Smith");
+                }}
+        ));
     }
 
 }

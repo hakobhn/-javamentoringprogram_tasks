@@ -7,22 +7,24 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(args={"inputFile.txt", "outputFile.txt"})
-public class ApplicationParamsTest {
+class ApplicationParamsTest {
 
     @Autowired
     ApplicationContext ctx;
 
     @Test
-    public void testRun() throws Exception {
+    void testRun() throws Exception {
         CommandLineRunner runner = ctx.getBean(CommandLineRunner.class);
         runner.run ( "inputFile.txt", "outputFile.txt");
+        assertNotNull(ctx.getId());
     }
 
     @Test
-    public void testFailRun() throws Exception {
+    void testFailRun() throws Exception {
         CommandLineRunner runner = ctx.getBean(CommandLineRunner.class);
         assertThrows(InvalidAppParamsProvidedException.class, () -> {
             runner.run ( "inputFile.txt");

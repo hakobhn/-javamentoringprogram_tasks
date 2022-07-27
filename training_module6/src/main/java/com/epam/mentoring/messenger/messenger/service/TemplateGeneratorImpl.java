@@ -2,8 +2,6 @@ package com.epam.mentoring.messenger.messenger.service;
 
 import com.epam.mentoring.messenger.messenger.exception.InvalidDataProvidedException;
 import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -14,9 +12,6 @@ import java.util.function.Function;
 
 @Service
 public class TemplateGeneratorImpl implements TemplateGenerator {
-
-//    @Value("${output.file:}")
-//    private String outputFile;
 
     private final EmailTemplate emailTemplate;
 
@@ -40,21 +35,16 @@ public class TemplateGeneratorImpl implements TemplateGenerator {
 
     @Override
     public String generateIntoFile(Map<String, String> inputs, File outFile) {
-
         String result = generate(inputs);
-
-        try {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFile))) {
             if (outFile.exists()) {
                 outFile.delete();
             }
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
             writer.write(result);
             writer.flush();
-            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return result;
     }
 }

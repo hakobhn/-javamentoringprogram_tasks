@@ -18,10 +18,10 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(properties = {
         "command.line.runner.enabled=false",
         "application.runner.enabled=false" })
-public class TemplateGeneratorTest {
+class TemplateGeneratorTest {
 
     @Test
-    public void testSimpleTemplateGeneration() {
+    void testSimpleTemplateGeneration() {
         Map<String, String> data = new HashMap<>();
 
         EmailTemplate emailTemplate = mock(EmailTemplate.class);
@@ -33,7 +33,7 @@ public class TemplateGeneratorTest {
     }
 
     @Test
-    public void generateSimpleTemplate() {
+    void generateSimpleTemplate() {
         Map<String, String> data = new HashMap<>();
         data.put("firstName", "Hakob");
         data.put("lastName", "Hakobyan");
@@ -47,7 +47,7 @@ public class TemplateGeneratorTest {
     }
 
     @Test
-    public void processInvalidSimpleTemplate() {
+    void processInvalidSimpleTemplate() {
         Map<String, String> data = new HashMap<>();
         data.put("lastName", "Hakobyan");
         data.put("label", "Press");

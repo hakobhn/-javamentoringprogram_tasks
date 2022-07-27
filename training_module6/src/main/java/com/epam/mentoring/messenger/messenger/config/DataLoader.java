@@ -1,25 +1,17 @@
 package com.epam.mentoring.messenger.messenger.config;
 
 import com.epam.mentoring.messenger.messenger.exception.InvalidDataPairException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 @Component
 public class DataLoader {
-
-//    @Value("${input.file:}")
-//    private String inputFile;
-//
-//    @Value("${output.file:}")
-//    private String outputFile;
 
     private Map<String, String> inputs;
 
@@ -53,9 +45,7 @@ public class DataLoader {
         System.out.println("Processing input file for retrieving data...");
 
         inputs = new HashMap<>();
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(inputFile));
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
             String line = reader.readLine();
             while (line != null) {
                 System.out.println("Inserted key value : " + line);
@@ -66,7 +56,6 @@ public class DataLoader {
                 inputs.put(parts[0].trim(), parts[1].trim());
                 line = reader.readLine();
             }
-            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
