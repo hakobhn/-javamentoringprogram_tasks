@@ -6,8 +6,4 @@ public class InvalidDataProvidedException extends RuntimeException {
         super(message);
     }
 
-    public InvalidDataProvidedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

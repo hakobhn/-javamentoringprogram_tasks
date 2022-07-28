@@ -6,8 +6,4 @@ public class InvalidAppParamsProvidedException extends RuntimeException {
         super(message);
     }
 
-    public InvalidAppParamsProvidedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

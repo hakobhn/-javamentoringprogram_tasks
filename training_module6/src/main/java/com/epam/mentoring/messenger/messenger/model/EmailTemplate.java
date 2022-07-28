@@ -26,15 +26,9 @@ public class EmailTemplate {
         return values;
     }
 
-    public void setValues(Set<String> values) {
-        this.values = values;
-    }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

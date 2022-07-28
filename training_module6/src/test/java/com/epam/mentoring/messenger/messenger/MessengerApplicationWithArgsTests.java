@@ -1,6 +1,7 @@
 package com.epam.mentoring.messenger.messenger;
 
 import com.epam.mentoring.messenger.messenger.config.DataLoader;
+import com.epam.mentoring.messenger.messenger.exception.InvalidDataPairException;
 import com.epam.mentoring.messenger.messenger.exception.InvalidDataProvidedException;
 import com.epam.mentoring.messenger.messenger.service.TemplateGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -106,7 +107,24 @@ class MessengerApplicationWithArgsTests {
 		assertThrows(InvalidDataProvidedException.class, () -> {
 			templateGenerator.generateIntoFile(inputs, outFile);
 		});
+	}
 
+	@Test
+	void testFailWithDataPairsWithFiles() throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
+		writer.write("firstNameHakob");
+		writer.newLine();
+		writer.write("lastNameHakobyan");
+		writer.newLine();
+		writer.write("label=Click");
+		writer.newLine();
+		writer.write("url=https://epam.com");
+		writer.flush();
+		writer.close();
+
+		assertThrows(InvalidDataPairException.class, () -> {
+			dataLoader.loadDataFromFile(inpFile);
+		});
 	}
 
 }

@@ -6,8 +6,4 @@ public class InvalidDataPairException extends RuntimeException {
         super(message);
     }
 
-    public InvalidDataPairException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

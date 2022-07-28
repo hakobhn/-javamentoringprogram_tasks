@@ -1,6 +1,7 @@
 package com.epam.mentoring.messenger.messenger;
 
 import com.epam.mentoring.messenger.messenger.config.DataLoader;
+import com.epam.mentoring.messenger.messenger.exception.InvalidDataPairException;
 import com.epam.mentoring.messenger.messenger.model.EmailTemplate;
 import com.epam.mentoring.messenger.messenger.service.TemplateGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {
@@ -105,5 +105,29 @@ class MessengerApplicationParametrizedTests {
 				templateGenerator.generateIntoFile(dataLoader.loadDataFromFile(inpFile), outFile));
 
 		assertTrue(outFile.length() > 0);
+	}
+
+	@ParameterizedTest
+	@DisplayName("checks if the given params would be populated with generator")
+	@CsvSource({
+			"firstNameAdam, lastName=Smith, label=Click, url=https://epam.com",
+			"firstName=John, a, label=Click Me, url=https://google.com",
+			"firstName=John, lastName=Doe, label.Click Me, url=https://google.com"
+	})
+	void testGenerationFailWithInvalidPairsParametrizedInputs(String firstname, String lastName, String label, String url) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
+		writer.write(firstname);
+		writer.newLine();
+		writer.write(lastName);
+		writer.newLine();
+		writer.write(label);
+		writer.newLine();
+		writer.write(url);
+		writer.flush();
+		writer.close();
+
+		assertThrows(InvalidDataPairException.class, () -> {
+			dataLoader.loadDataFromFile(inpFile);
+		});
 	}
 }

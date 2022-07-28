@@ -51,7 +51,6 @@ class MessagingAppDurationReportTest {
 
     @Test
     void testWithFileInputs() throws IOException {
-        System.out.println("-------------------------- INTEGRATION TEST -----------------------------");
         BufferedWriter writer = new BufferedWriter(new FileWriter(inpFile));
         writer.write("firstName=Hakob");
         writer.newLine();
@@ -69,6 +68,7 @@ class MessagingAppDurationReportTest {
 
         assertTrue(outFile.length() > 0);
     }
+
     @Test
     void testWithMockInputs() throws IOException {
         when(emailTemplate.getContent()).thenReturn("Some value: #{firstName} #{lastName}");
