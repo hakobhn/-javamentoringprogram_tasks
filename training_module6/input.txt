@@ -1,1 +1,1 @@
-lastName=Hakobyan
+firstName=Hakob
