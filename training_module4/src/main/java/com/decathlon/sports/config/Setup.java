@@ -71,7 +71,7 @@ public class Setup {
                                 .doOnNext(data -> logger.debug("On next data: {}", data))
                                 .map(data -> data.stream()
                                         .map(dt -> {
-                                            logger.debug("Date: {}", dt);
+                                            logger.debug("Data: {}", dt);
                                             return dt;
                                         })
                                         .map(sportDtoToEntityConverter::convert)
