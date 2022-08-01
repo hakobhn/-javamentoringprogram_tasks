@@ -89,6 +89,7 @@ class MassagingAppExpectedExceptionJUnit5Tests {
     }
 
     @Test
+    @DisplayName("For mac os")
     @EnabledIf(
             expression = "#{systemProperties['os.name'].toLowerCase().contains('mac')}",
             reason = "Enabled on Mac OS"

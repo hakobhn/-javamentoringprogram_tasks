@@ -64,7 +64,9 @@ public class GeneratorSteps implements En {
         When("user generates the new emails {string}", (String testContext) -> {
             // passing data to template generator
             for (Map<String, String> data : values) {
-                isGenerated = isGenerated && !templateGenerator.generate(data).isEmpty();
+                String generationResult = templateGenerator.generate(data);
+                System.out.println(generationResult);
+                isGenerated = isGenerated && !generationResult.isEmpty();
             }
         });
 

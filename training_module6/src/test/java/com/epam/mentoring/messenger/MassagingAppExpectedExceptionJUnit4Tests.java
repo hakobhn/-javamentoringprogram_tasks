@@ -4,9 +4,10 @@ import com.epam.mentoring.messenger.exception.InvalidDataProvidedException;
 import com.epam.mentoring.messenger.model.EmailTemplate;
 import com.epam.mentoring.messenger.service.DataLoader;
 import com.epam.mentoring.messenger.service.TemplateGenerator;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.BeforeEach;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -39,7 +40,7 @@ public class MassagingAppExpectedExceptionJUnit4Tests {
     private File inpFile = new File("input.txt");
     private File outFile = new File("output.txt");
 
-    @BeforeEach
+    @Before
     public void setUp() throws IOException {
         if (inpFile.exists()) {
             inpFile.delete();
