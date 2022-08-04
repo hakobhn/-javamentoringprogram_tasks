@@ -1,0 +1,4 @@
+firstName=Hakob
+lastName=Hakobyan
+label=Click
+url=https://epam.com
